@@ -1,23 +1,30 @@
 import express, { Request, Response } from "express";
 
 import {
-  groceryCreateController,
-  groceryDeleteController,
+  listGroceriesController,
   groceryDetailsController,
-  groceryListController,
-  groceryUpdateController,
+  updateGroceryController,
+  deleteGroceryController,
+  createGroceryController,
 } from "../../controllers/groceryController";
+import { checkAdminMiddleware } from "../../middleware/checkAdminMiddleware";
 
 const router = express.Router();
 
-router.patch("/", groceryUpdateController);
+/* Public Routes */
 
-router.delete("/", groceryDeleteController);
+router.get("/list", listGroceriesController);
 
 router.get("/", groceryDetailsController);
 
-router.get("/list", groceryListController);
+/* Admin Only Routes */
 
-router.post("/create-grocery", groceryCreateController);
+router.use(checkAdminMiddleware); // Validates Is Admin
+
+router.patch("/", updateGroceryController);
+
+router.delete("/", deleteGroceryController);
+
+router.post("/create-grocery", createGroceryController);
 
 export default router;

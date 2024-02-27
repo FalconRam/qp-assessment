@@ -4,3 +4,6 @@ node_modules
 
 # DB SSL certificate
 prisma/ca.pem
+
+#
+requirements.txt

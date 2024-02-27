@@ -5,10 +5,11 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "../services/createResponse";
+import { findRecordById } from "../services/HelperFunctions/findRecord";
 
 const prisma = new PrismaClient();
 
-export const groceryCreateController = async (req: Request, res: Response) => {
+export const createGroceryController = async (req: Request, res: Response) => {
   const { groceryName, groceryPrice, groceryType, groceryStockCount } =
     req.body;
   try {
@@ -23,11 +24,11 @@ export const groceryCreateController = async (req: Request, res: Response) => {
 
     createSuccessResponse(res, 201, newgrocery, "Grocery created");
   } catch (error: any) {
-    createSuccessResponse(res, 500, {}, error.message || error.stack || error);
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
   }
 };
 
-export const groceryUpdateController = async (req: Request, res: Response) => {
+export const updateGroceryController = async (req: Request, res: Response) => {
   const updateFields = req.body;
   const { groceryId } = req.query;
   try {
@@ -36,6 +37,11 @@ export const groceryUpdateController = async (req: Request, res: Response) => {
       return createErrorResponse(res, 400, {}, "Invalid groceryId");
     }
     const parsedGroceryId = parseInt(groceryId);
+
+    const isExist = await findRecordById(parsedGroceryId);
+
+    if (!isExist) return createErrorResponse(res, 400, {}, "Invalid groceryId");
+
     const newgrocery = await prisma.groceryList.update({
       where: {
         id: parsedGroceryId,
@@ -43,13 +49,13 @@ export const groceryUpdateController = async (req: Request, res: Response) => {
       data: updateFields,
     });
 
-    createSuccessResponse(res, 200, newgrocery, "Grocery created");
+    createSuccessResponse(res, 200, newgrocery, "Grocery Updated");
   } catch (error: any) {
-    createSuccessResponse(res, 500, {}, error.message || error.stack || error);
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
   }
 };
 
-export const groceryDeleteController = async (req: Request, res: Response) => {
+export const deleteGroceryController = async (req: Request, res: Response) => {
   const { groceryId } = req.query;
   try {
     // Check if groceryId is a string
@@ -57,18 +63,24 @@ export const groceryDeleteController = async (req: Request, res: Response) => {
       return createErrorResponse(res, 400, {}, "Invalid groceryId");
     }
     const parsedGroceryId = parseInt(groceryId);
+
+    const isExist = await findRecordById(parsedGroceryId);
+
+    if (!isExist) return createErrorResponse(res, 400, {}, "Invalid groceryId");
+
     await prisma.groceryList.delete({
       where: {
         id: parsedGroceryId,
       },
     });
+
     return createSuccessResponse(res, 200, {}, "Grocery deleted");
   } catch (error: any) {
-    createSuccessResponse(res, 500, {}, error.message || error.stack || error);
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
   }
 };
 
-export const groceryListController = async (req: Request, res: Response) => {
+export const listGroceriesController = async (req: Request, res: Response) => {
   try {
     const groceryList = await prisma.groceryList.findMany();
 
@@ -76,10 +88,10 @@ export const groceryListController = async (req: Request, res: Response) => {
       res,
       200,
       { groceryList: groceryList },
-      "On List Route"
+      "Groceries list Retrieved"
     );
   } catch (error: any) {
-    createSuccessResponse(res, 500, {}, error.message || error.stack || error);
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
   }
 };
 
@@ -91,18 +103,11 @@ export const groceryDetailsController = async (req: Request, res: Response) => {
       return createErrorResponse(res, 400, {}, "Invalid groceryId");
     }
     const parsedGroceryId = parseInt(groceryId);
-    const grocery = await prisma.groceryList.findUnique({
-      where: {
-        id: parsedGroceryId,
-      },
-    });
-    return createSuccessResponse(
-      res,
-      200,
-      { groceryDetails: grocery },
-      "Grocery deleted"
-    );
+
+    const grocery = await findRecordById(parsedGroceryId, true);
+
+    return createSuccessResponse(res, 200, { groceryDetails: grocery }, "");
   } catch (error: any) {
-    createSuccessResponse(res, 500, {}, error.message || error.stack || error);
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
   }
 };

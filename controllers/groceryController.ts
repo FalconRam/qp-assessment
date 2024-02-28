@@ -38,7 +38,7 @@ export const updateGroceryController = async (req: Request, res: Response) => {
     }
     const parsedGroceryId = parseInt(groceryId);
 
-    const isExist = await findRecordById(parsedGroceryId);
+    const isExist = await findRecordById(groceryId, "groceryList", false);
 
     if (!isExist) return createErrorResponse(res, 400, {}, "Invalid groceryId");
 
@@ -64,7 +64,7 @@ export const deleteGroceryController = async (req: Request, res: Response) => {
     }
     const parsedGroceryId = parseInt(groceryId);
 
-    const isExist = await findRecordById(parsedGroceryId);
+    const isExist = await findRecordById(groceryId, "groceryList", false);
 
     if (!isExist) return createErrorResponse(res, 400, {}, "Invalid groceryId");
 
@@ -102,9 +102,9 @@ export const groceryDetailsController = async (req: Request, res: Response) => {
     if (typeof groceryId !== "string") {
       return createErrorResponse(res, 400, {}, "Invalid groceryId");
     }
-    const parsedGroceryId = parseInt(groceryId);
+    // const parsedGroceryId = parseInt(groceryId);
 
-    const grocery = await findRecordById(parsedGroceryId, true);
+    const grocery = await findRecordById(groceryId, "groceryList", true);
 
     return createSuccessResponse(res, 200, { groceryDetails: grocery }, "");
   } catch (error: any) {

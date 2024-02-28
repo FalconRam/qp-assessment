@@ -4,7 +4,7 @@ import { createErrorResponse } from "../services/createResponse";
 
 import { Request, userTokenInterface } from "../types";
 
-const checkAdminMiddleware = async (
+const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -17,24 +17,14 @@ const checkAdminMiddleware = async (
       req.headers.authorization.includes("Bearer ")
     ) {
       const encodedtoken = req.headers.authorization.split(" ")[1];
-
-      // verify JWT token
       const decodedToken = jwt.verify(
         encodedtoken,
         process.env.AUTH_ACCESS_TOKEN_SECRET_KEY
       ) as userTokenInterface;
 
-      // If isAdmin is false or adminKey is not set
-      if (
-        !decodedToken.isAdmin ||
-        !decodedToken.adminKey ||
-        decodedToken.adminKey === null ||
-        decodedToken.adminKey === undefined ||
-        decodedToken.adminKey === ""
-      )
-        return createErrorResponse(res, 403, {}, "No Access for this Route");
-      // If Everything okay...
-      req.adminKey = decodedToken.adminKey;
+      req.emailId = decodedToken.emailId;
+      req.isAdmin = decodedToken.isAdmin;
+
       next();
       return;
     }
@@ -44,4 +34,4 @@ const checkAdminMiddleware = async (
   }
 };
 
-export default checkAdminMiddleware;
+export default authMiddleware;

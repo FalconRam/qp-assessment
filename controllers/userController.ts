@@ -6,6 +6,7 @@ import {
   createSuccessResponse,
 } from "../services/createResponse";
 import { PrismaClient } from "@prisma/client";
+import { signAccessToken } from "../services/HelperFunctions/jwtService";
 
 const prisma = new PrismaClient();
 
@@ -16,7 +17,12 @@ export const createUserController = async (req: Request, res: Response) => {
     if (!adminKey) {
       // Public User Logic
       if (!username || !emailId || password.length < 6) {
-        return createErrorResponse(res, 400, {}, "Request Format is Wrong");
+        return createErrorResponse(
+          res,
+          400,
+          {},
+          "Request format received is incorrect"
+        );
       }
       hashedPassword = await bcrypt.hash(password, 12);
       const newUser = await prisma.user.create({
@@ -31,7 +37,13 @@ export const createUserController = async (req: Request, res: Response) => {
           emailId: true,
         },
       });
-      return createSuccessResponse(res, 201, { newUser }, "User Created");
+      const accessToken = await signAccessToken(req, false);
+      return createSuccessResponse(
+        res,
+        201,
+        { ...newUser, accessToken },
+        "User Created"
+      );
     } else if (typeof adminKey === "string" && adminKey.length === 12) {
       // Admin Logic
       hashedPassword = await bcrypt.hash(password, 12);
@@ -51,9 +63,24 @@ export const createUserController = async (req: Request, res: Response) => {
           isAdmin: true,
         },
       });
-      return createSuccessResponse(res, 201, { newAdmin }, "Admin Created");
+      const accessToken = await signAccessToken(
+        req,
+        adminKey ? true : false,
+        adminKey
+      );
+      return createSuccessResponse(
+        res,
+        201,
+        { ...newAdmin, accessToken },
+        "Admin Created"
+      );
     }
-    return createErrorResponse(res, 400, {}, "Request Format is Wrong");
+    return createErrorResponse(
+      res,
+      400,
+      {},
+      "Request format received is incorrect"
+    );
   } catch (error: any) {
     return createErrorResponse(
       res,

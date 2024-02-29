@@ -38,3 +38,24 @@ export interface userTokenInterface extends JwtPayload {
   isAdmin: boolean;
   adminKey?: string;
 }
+
+export type OrderTransIDMappedItem = {
+  groceryId: number;
+  groceryName: string;
+  groceryPrice: number;
+  groceryType?: string;
+  purchaseQuantity: number;
+  groceryPriceByQuantity: number;
+  transactionId: string;
+  userId: number;
+};
+
+export type OrderItem = {
+  groceryId: number;
+  groceryName: string;
+  groceryPrice: number;
+  groceryType?: string;
+  purchaseQuantity: number;
+  transactionId: string;
+  userId: number;
+};

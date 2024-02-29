@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
 import {
@@ -6,6 +6,8 @@ import {
   createSuccessResponse,
 } from "../services/createResponse";
 import { findRecordById } from "../services/HelperFunctions/findRecord";
+import { createUUID } from "../services/HelperFunctions/createUUID";
+import { GroceryDetails, OrderTransIDMappedItem, UserDetails } from "../types";
 
 const prisma = new PrismaClient();
 
@@ -109,5 +111,209 @@ export const groceryDetailsController = async (req: Request, res: Response) => {
     return createSuccessResponse(res, 200, { groceryDetails: grocery }, "");
   } catch (error: any) {
     createErrorResponse(res, 500, {}, error.message || error.stack || error);
+  }
+};
+
+export const purchaseGroceryController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const transactionId = await createUUID();
+    const userDetails = await findRecordById<UserDetails>(
+      req.emailId,
+      "user",
+      true
+    );
+
+    if (!userDetails)
+      return createErrorResponse(res, 404, {}, "User not found");
+
+    // Below fn will map each order with userId & TransactionId,
+    // and add each grocery Price by Quantity, then calculates the total orders price
+    let totalPurchaseAmount = 0;
+    let transIdMappedPurchaseOrder: OrderTransIDMappedItem[] =
+      req.body.purchaseOrder.map((order: OrderTransIDMappedItem) => {
+        let groceryPriceByQuantity =
+          Math.round(order.groceryPrice * order.purchaseQuantity * 100) / 100; // Round to two decimal places
+        order = {
+          ...order,
+          transactionId,
+          userId: userDetails.id,
+          groceryPriceByQuantity,
+        };
+
+        totalPurchaseAmount =
+          Math.round((totalPurchaseAmount + groceryPriceByQuantity) * 100) /
+          100; // Round to two decimal places
+
+        return order;
+      });
+
+    await prisma.groceryListBooked.createMany({
+      data: transIdMappedPurchaseOrder,
+      skipDuplicates: true,
+    });
+
+    const newGroceryList = await prisma.groceryListBooked.findMany({
+      where: {
+        transactionId: transactionId,
+      },
+      select: {
+        groceryId: true,
+        groceryName: true,
+        groceryPrice: true,
+        groceryType: true,
+        purchaseQuantity: true,
+        groceryPriceByQuantity: true,
+      },
+    });
+    res.locals.groceryListBooked = {
+      orderDetails: newGroceryList,
+      transactionId,
+      totalPurchaseAmount,
+    };
+    // return createSuccessResponse(
+    //   res,
+    //   200,
+    //   {
+    //     orderDetails: newGroceryList,
+    //     transactionId,
+    //     totalPurchaseAmount,
+    //   },
+    //   "Order Created"
+    // );
+    next();
+  } catch (error: any) {
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
+  }
+};
+
+export const reduceGroceries = async (req: Request, res: Response) => {
+  try {
+    await res.locals.groceryListBooked.orderDetails.map(
+      async (orderDetails: OrderTransIDMappedItem) => {
+        const existingGroceryDetails = await findRecordById<GroceryDetails>(
+          orderDetails.groceryId.toString(),
+          "groceryList",
+          true
+        );
+        return await prisma.groceryList.update({
+          where: {
+            id: orderDetails.groceryId,
+          },
+          data: {
+            groceryStockCount:
+              existingGroceryDetails.groceryStockCount -
+              orderDetails.purchaseQuantity,
+          },
+        });
+      }
+    );
+
+    return createSuccessResponse(
+      res,
+      201,
+      res.locals.groceryListBooked,
+      "Order Created"
+    );
+  } catch (error: any) {
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
+  }
+};
+
+export const confirmPurchaseGroceryController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { totalPurchaseAmount, transactionId } = req.body;
+    const pendingOrderDetails = await prisma.groceryListBooked.findMany({
+      where: {
+        transactionId: transactionId,
+      },
+    });
+    const confirmedOrders = await Promise.all(
+      pendingOrderDetails.map(async (orderdetails) => {
+        return await prisma.groceryListBooked.update({
+          where: {
+            id: orderdetails.id,
+          },
+          data: {
+            isPurchaseConfirmed: true,
+            transactionStatus: "Captured",
+          },
+          select: {
+            id: true,
+            groceryId: true,
+            groceryName: true,
+            groceryPrice: true,
+            groceryType: true,
+            purchaseQuantity: true,
+            groceryPriceByQuantity: true,
+            isPurchaseConfirmed: true,
+            transactionStatus: true,
+            userId: true,
+          },
+        });
+      })
+    );
+
+    const transactionHistory = await prisma.transactionHistory.create({
+      data: {
+        transactionId: transactionId,
+        totalAmount: totalPurchaseAmount,
+        transactionStatus: "Captured",
+        userId: confirmedOrders[0].userId,
+      },
+      select: {
+        id: true,
+        transactionId: true,
+        transactionStatus: true,
+        totalAmount: true,
+      },
+    });
+
+    return createSuccessResponse(
+      res,
+      200,
+      {
+        confirmedOrders,
+        transactionDetails: transactionHistory,
+      },
+      "Order Purchased"
+    );
+  } catch (error: any) {
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
+  }
+};
+
+export const updatePaymentController = async (req: Request, res: Response) => {
+  try {
+  } catch (error: any) {
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
+  }
+};
+
+// For testing purposes, to be removed
+export const deleteController = async (req: Request, res: Response) => {
+  try {
+    // await prisma.groceryListBooked.deleteMany();
+    createSuccessResponse(res, 200, {}, "All groceries deleted");
+  } catch (error: any) {
+    createErrorResponse(res, 500, {}, "Deleted");
+  }
+};
+
+// For testing purposes, to be removed
+export const insertManyController = async (req: Request, res: Response) => {
+  try {
+    const result = await prisma.groceryList.createMany({
+      data: req.body.groceryList,
+    });
+    createSuccessResponse(res, 200, { result }, "All groceries deleted");
+  } catch (error: any) {
+    createErrorResponse(res, 500, {}, "Deleted");
   }
 };

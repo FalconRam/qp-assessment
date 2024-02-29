@@ -20,31 +20,46 @@ model User {
   password   String?
   isAdmin    Boolean @default(false)
   adminKey   String?
+  groceryBookedList GroceryListBooked[]
+  transactionHistory TransactionHistory[]
   createdAt  DateTime @default(now())
   updateAt   DateTime @default(now()) @updatedAt
-  groceryBookedList GroceryListBooked[]
 }
 
 model GroceryList {
   id                 Int @id @default(autoincrement())
   groceryName        String
-  groceryPrice       Int
+  groceryPrice       Decimal  @db.Decimal(8,2)
   groceryType        String?
-  groceryStockCount  Int @default(0)
+  groceryStockCount  Decimal  @db.Decimal(8,2) @default(0.00)
   createdAt          DateTime @default(now())
   updateAt           DateTime @default(now()) @updatedAt
 }
 
 model GroceryListBooked {
-  id               Int @id @default(autoincrement())
-  groceryId        Int
-  groceryName      String
-  groceryPrice     Int
-  groceryType      String?
-  groceryQuantity  Int @default(0)
-  transactionId    Int
-  createdAt        DateTime @default(now())
-  updateAt         DateTime @default(now()) @updatedAt
-  userId           Int
-  user             User @relation(fields: [userId], references: [id])
+  id                     Int @id @default(autoincrement())
+  groceryId              Int
+  groceryName            String
+  groceryPrice           Decimal  @db.Decimal(8,2)
+  groceryType            String?
+  purchaseQuantity       Decimal  @db.Decimal(8,2)
+  groceryPriceByQuantity Decimal  @db.Decimal(8,2)
+  transactionId          String
+  isPurchaseConfirmed    Boolean @default(false)
+  transactionStatus      String @default("Approved")
+  userId                 Int
+  user                   User @relation(fields: [userId], references: [id])
+  createdAt              DateTime @default(now())
+  updateAt               DateTime @default(now()) @updatedAt
+}
+
+model TransactionHistory {
+  id                Int @id @default(autoincrement())
+  transactionId     String
+  transactionStatus String
+  totalAmount       Decimal  @db.Decimal(16,2)
+  userId            Int
+  user              User @relation(fields: [userId], references: [id])
+  createdAt         DateTime @default(now())
+  updateAt          DateTime @default(now()) @updatedAt
 }

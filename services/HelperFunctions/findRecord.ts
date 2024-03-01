@@ -11,8 +11,6 @@ const findRecordById = async <T extends RecordDetails>(
   let details;
   switch (modelName) {
     case "groceryList":
-      console.log(searchId);
-
       details = await prisma.groceryList.findUnique({
         where: { id: +searchId },
         select: {
@@ -23,8 +21,6 @@ const findRecordById = async <T extends RecordDetails>(
           groceryStockCount: true,
         },
       });
-      console.log(details);
-
       break;
     case "user":
       details = await prisma.user.findUnique({
@@ -37,7 +33,6 @@ const findRecordById = async <T extends RecordDetails>(
           isAdmin: true,
         },
       });
-
       break;
     case "user":
       details = await prisma.user.findUnique({

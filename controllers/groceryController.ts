@@ -84,7 +84,14 @@ export const deleteGroceryController = async (req: Request, res: Response) => {
 
 export const listGroceriesController = async (req: Request, res: Response) => {
   try {
-    const groceryList = await prisma.groceryList.findMany();
+    const groceryList = await prisma.groceryList.findMany({
+      select: {
+        id: true,
+        groceryName: true,
+        groceryPrice: true,
+        groceryType: true,
+      },
+    });
 
     createSuccessResponse(
       res,
@@ -291,29 +298,63 @@ export const confirmPurchaseGroceryController = async (
 
 export const updatePaymentController = async (req: Request, res: Response) => {
   try {
+    createSuccessResponse(res, 200, {}, "Payment Updated");
   } catch (error: any) {
     createErrorResponse(res, 500, {}, error.message || error.stack || error);
   }
 };
 
-// For testing purposes, to be removed
-export const deleteController = async (req: Request, res: Response) => {
+export const getAllGroceriesControllers = async (
+  req: Request,
+  res: Response
+) => {
   try {
-    // await prisma.groceryListBooked.deleteMany();
-    createSuccessResponse(res, 200, {}, "All groceries deleted");
+    const groceries = await prisma.groceryList.findMany();
+    createSuccessResponse(res, 200, { groceries }, "Orders Retrieved");
   } catch (error: any) {
-    createErrorResponse(res, 500, {}, "Deleted");
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
   }
 };
 
-// For testing purposes, to be removed
-export const insertManyController = async (req: Request, res: Response) => {
+export const getAllOrdersControllers = async (req: Request, res: Response) => {
   try {
-    const result = await prisma.groceryList.createMany({
-      data: req.body.groceryList,
-    });
-    createSuccessResponse(res, 200, { result }, "All groceries deleted");
+    const orders = await prisma.groceryListBooked.findMany();
+    createSuccessResponse(res, 200, { orders }, "Orders Retrieved");
   } catch (error: any) {
-    createErrorResponse(res, 500, {}, "Deleted");
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
   }
 };
+
+export const getAllTransactionsController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const transactions = await prisma.transactionHistory.findMany();
+    createSuccessResponse(res, 200, { transactions }, "Transactions Retrieved");
+  } catch (error: any) {
+    createErrorResponse(res, 500, {}, error.message || error.stack || error);
+  }
+};
+
+// For Development purpose
+// export const deleteController = async (req: Request, res: Response) => {
+//   try {
+//     // await prisma.groceryListBooked.deleteMany();
+//     createSuccessResponse(res, 200, {}, "All groceries deleted");
+//   } catch (error: any) {
+//     createErrorResponse(res, 500, {}, "Deleted");
+//   }
+// };
+
+// // For Development purpose
+// export const insertManyController = async (req: Request, res: Response) => {
+//   try {
+//     // const result = await prisma.groceryList.createMany({
+//     //   data: req.body.groceryList,
+//     // });
+//     createSuccessResponse(res, 200, {}, "Groceries Inserted");
+//   } catch (error: any) {
+//     createErrorResponse(res, 500, {}, "Deleted");
+//   }
+// };

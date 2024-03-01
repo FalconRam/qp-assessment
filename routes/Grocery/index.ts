@@ -9,17 +9,15 @@ import {
   purchaseGroceryController,
   confirmPurchaseGroceryController,
   updatePaymentController,
-  deleteController,
-  insertManyController,
   reduceGroceries,
+  getAllTransactionsController,
+  getAllOrdersControllers,
+  getAllGroceriesControllers,
 } from "../../controllers/groceryController";
 import checkAdminMiddleware from "../../middleware/checkAdminMiddleware";
 import authMiddleware from "../../middleware/authMiddleware";
 
 const router = express.Router();
-
-// router.delete("/deleteAll", deleteController); // For testing purposes, to be removed
-// router.post("/insert-grocery", insertManyController); // For testing purposes, to be removed
 
 /* User Routes */
 
@@ -39,14 +37,27 @@ router.post("/confirm-purchaseGrocery", confirmPurchaseGroceryController);
 
 // Based on Payment Status update Payment status of Grocery Booked list
 // and create the Transaction Record
-router.post("/updatePayment", updatePaymentController); // Can be acheived, if Payment gateway intergrated
+// Can be acheived, if Payment gateway intergrated
+router.post("/updatePayment", updatePaymentController);
 
 /* Admin Only Routes */
 
-router.patch("/", checkAdminMiddleware, updateGroceryController);
+router.use(checkAdminMiddleware);
 
-router.delete("/", checkAdminMiddleware, deleteGroceryController);
+router.patch("/", updateGroceryController);
 
-router.post("/create-grocery", checkAdminMiddleware, createGroceryController);
+router.delete("/", deleteGroceryController);
+
+router.post("/create-grocery", createGroceryController);
+
+router.get("/getAll-groceries", getAllGroceriesControllers);
+
+router.get("/getAll-orders", getAllOrdersControllers);
+
+router.get("/getAll-transactions", getAllTransactionsController);
+
+// router.delete("/deleteAll", deleteController); // For Development purpose
+
+// router.post("/insert-grocery", insertManyController); // For Development purpose
 
 export default router;

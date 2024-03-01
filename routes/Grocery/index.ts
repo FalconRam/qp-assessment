@@ -39,7 +39,7 @@ router.post("/confirm-purchaseGrocery", confirmPurchaseGroceryController);
 
 // Based on Payment Status update Payment status of Grocery Booked list
 // and create the Transaction Record
-router.post("/updatePayment", updatePaymentController);
+router.post("/updatePayment", updatePaymentController); // Can be acheived, if Payment gateway intergrated
 
 /* Admin Only Routes */
 

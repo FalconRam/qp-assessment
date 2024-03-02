@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "66d4e42f-e9cf-4cf6-9805-d0593242b468",
+		"name": "User",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17117187"
+	},
+	"item": [
+		{
+			"name": "createUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "/* Public User body */\r\n{\r\n    \"username\": \"Test\",\r\n    \"emailId\": \"test@gmail.com\",\r\n    \"password\": \"testpass\"\r\n}\r\n/* Admin body */\r\n// {\r\n//     \"username\": \"Admin - Test\",\r\n//     \"emailId\": \"admimtest@gmail.com\",\r\n//     \"password\": \"admintestpass\",\r\n//     \"adminKey\": \"admin_secret\"\r\n// }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{userRoute}}/create-user",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{userRoute}}",
+						"create-user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

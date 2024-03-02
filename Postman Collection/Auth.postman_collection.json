@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "0f49a4a5-229f-41cf-b5a2-25a40d1beea3",
+		"name": "Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17117187"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// {\r\n//     \"username\": \"Ram Vignesh\",\r\n//     \"emailId\": \"ram@gmail.com\",\r\n//     \"password\": \"rampass\"\r\n//     // \"adminKey\": \"\"\r\n// }\r\n{\r\n    \"username\": \"Admin - Test\",\r\n    \"emailId\": \"admimtest@gmail.com\",\r\n    \"password\": \"admintestpass\",\r\n    \"adminKey\": \"admin_secret\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{authRoute}}/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{authRoute}}",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

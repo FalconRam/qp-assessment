@@ -1,0 +1,505 @@
+{
+	"info": {
+		"_postman_id": "445bc38b-a217-46b8-ac6d-0385aa10846a",
+		"name": "Grocery",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17117187"
+	},
+	"item": [
+		{
+			"name": "list",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/list",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createGrocery",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ // Send Price & Stock Count with Precise count upto 2 only, if there is no paise in price / no grams in count, send as.00\r\n    \"groceryName\": \"Black Salt\",\r\n    \"groceryPrice\": 102.50,\r\n    \"groceryType\": \"Condiments\",\r\n    \"groceryStockCount\": 1000.57\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/create-grocery",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"create-grocery"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateGrocery",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    // \"groceryName\": \"Cumin\",\r\n    // \"groceryPrice\": 9.22,\r\n    // \"groceryType\": \"Grains and Bread\"\r\n    \"groceryStockCount\": 2458.32\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}?groceryId=18",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}"
+					],
+					"query": [
+						{
+							"key": "groceryId",
+							"value": "18"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "groceryDetails",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"groceryName\": \"Cumin\",\r\n    \"groceryPrice\": 45,\r\n    \"groceryType\": \"Condiments\"\r\n    // \"groceryStockCount\": 2000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}?groceryId=20",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}"
+					],
+					"query": [
+						{
+							"key": "groceryId",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteGrocery",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "admin_secret",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}?groceryId=9",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}"
+					],
+					"query": [
+						{
+							"key": "groceryId",
+							"value": "9"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteAll",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "admin_secret",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/deleteAll",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"deleteAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InsertMany",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "admin_secret",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"groceryList\": [\r\n        {\r\n            \"groceryName\": \"Cashew Nut\",\r\n            \"groceryPrice\": 155.42,\r\n            \"groceryType\": \"\",\r\n            \"groceryStockCount\": 1000.00\r\n        },\r\n        {\r\n            \"groceryName\": \"White beans\",\r\n            \"groceryPrice\": 67.00,\r\n            \"groceryType\": \"\",\r\n            \"groceryStockCount\": 424.42\r\n        },\r\n        {\r\n            \"groceryName\": \"Honey\",\r\n            \"groceryPrice\": 199.42,\r\n            \"groceryType\": \"\",\r\n            \"groceryStockCount\": 500.00\r\n        },\r\n        {\r\n            \"groceryName\": \"Drum Stick\",\r\n            \"groceryPrice\": 15.42,\r\n            \"groceryType\": \"Vegatable\",\r\n            \"groceryStockCount\": 500.41\r\n        },\r\n        {\r\n            \"groceryName\": \"Milk\",\r\n            \"groceryPrice\": 37.00,\r\n            \"groceryType\": \"Diary\",\r\n            \"groceryStockCount\": 590.00\r\n        },\r\n        {\r\n            \"groceryName\": \"Eggs\",\r\n            \"groceryPrice\": 6.42,\r\n            \"groceryType\": \"Diary\",\r\n            \"groceryStockCount\": 530.69\r\n        },\r\n        {\r\n            \"groceryName\": \"Coriander\",\r\n            \"groceryPrice\": 16.67,\r\n            \"groceryType\": \"Condiments\",\r\n            \"groceryStockCount\": 500.42\r\n        },\r\n        {\r\n            \"groceryName\": \"Sugar\",\r\n            \"groceryPrice\": 36.42,\r\n            \"groceryType\": \"Condiments\",\r\n            \"groceryStockCount\": 1500.01\r\n        },\r\n        {\r\n            \"groceryName\": \"Wheat Flour\",\r\n            \"groceryPrice\": 105.67,\r\n            \"groceryType\": \"Flour\",\r\n            \"groceryStockCount\": 1500.01\r\n        },\r\n        {\r\n            \"groceryName\": \"Rice Flour\",\r\n            \"groceryPrice\": 85.80,\r\n            \"groceryType\": \"Flour\",\r\n            \"groceryStockCount\": 1500.42\r\n        },\r\n        {\r\n            \"groceryName\": \"Pepper\",\r\n            \"groceryPrice\": 36.42,\r\n            \"groceryType\": \"Condiments\",\r\n            \"groceryStockCount\": 500.00\r\n        },\r\n        {\r\n            \"groceryName\": \"Salt\",\r\n            \"groceryPrice\": 10.42,\r\n            \"groceryType\": \"Condiments\",\r\n            \"groceryStockCount\": 100.01\r\n        },\r\n        {\r\n            \"groceryName\": \"Rice\",\r\n            \"groceryPrice\": 45.42,\r\n            \"groceryType\": \"Grains and Bread\",\r\n            \"groceryStockCount\": 10000.42\r\n        },\r\n        {\r\n            \"groceryName\": \"Bread\",\r\n            \"groceryPrice\": 32.43,\r\n            \"groceryType\": \"Grains and Bread\",\r\n            \"groceryStockCount\": 500.01\r\n        },\r\n        {\r\n            \"groceryName\": \"Cumin\",\r\n            \"groceryPrice\": 47.42,\r\n            \"groceryType\": \"Condiments\",\r\n            \"groceryStockCount\": 2000.00\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/insert-grocery",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"insert-grocery"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "purchaseGrocery",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"purchaseOrder\": [\r\n        {\r\n            \"groceryId\": 29,\r\n            \"groceryName\": \"Pepper\",\r\n            \"groceryPrice\": \"36.42\",\r\n            \"groceryType\": \"Condiments\",\r\n            \"purchaseQuantity\": 0.25\r\n        },\r\n        {\r\n            \"groceryId\": 30,\r\n            \"groceryName\": \"Salt\",\r\n            \"groceryPrice\": \"10.42\",\r\n            \"groceryType\": \"Condiments\",\r\n            \"purchaseQuantity\": 1\r\n        },\r\n        {\r\n            \"groceryId\": 23,\r\n            \"groceryName\": \"Milk\",\r\n            \"groceryPrice\": 37,\r\n            \"groceryType\": \"Diary\",\r\n            \"purchaseQuantity\": 10\r\n        },\r\n        {\r\n            \"groceryId\": 27,\r\n            \"groceryName\": \"Wheat Flour\",\r\n            \"groceryPrice\": \"105.67\",\r\n            \"groceryType\": \"Flour\",\r\n            \"purchaseQuantity\": 10\r\n        },\r\n        {\r\n            \"groceryId\": 31,\r\n            \"groceryName\": \"Rice\",\r\n            \"groceryPrice\": \"45.42\",\r\n            \"groceryType\": \"Grains and Bread\",\r\n            \"purchaseQuantity\": 10\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/purchase-grocery",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"purchase-grocery"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "confirmPurchaseGrocery",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"transactionId\": \"35047dea-e880-41a7-b114-195107710adb\",\r\n    \"totalPurchaseAmount\": 37\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/confirm-purchaseGrocery",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"confirm-purchaseGrocery"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllGroceries",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/getAll-groceries",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"getAll-groceries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllOrders",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/getAll-orders",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"getAll-orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllTransactions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{adminJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/getAll-transactions",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"getAll-transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updatePayment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{userJWTToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"purchaseOrder\": [\r\n        {\r\n            \"id\": 2,\r\n            \"groceryName\": \"Cashew Nut\",\r\n            \"groceryPrice\": 155,\r\n            \"purchaseQuantity\": 2\r\n        },\r\n        {\r\n            \"id\": 10,\r\n            \"groceryName\": \"Milk\",\r\n            \"groceryPrice\": 37\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/{{version}}/{{groceryRoute}}/updatePayment",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"{{version}}",
+						"{{groceryRoute}}",
+						"updatePayment"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

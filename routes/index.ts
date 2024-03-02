@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 
-import authRotues from "./Auth/index.ts";
-import userRotues from "./User/index.ts";
-import groceryRotues from "./Grocery/index.ts";
-import { createErrorResponse } from "../services/createResponse/index.ts";
+import authRotues from "./Auth/index";
+import userRotues from "./User/index";
+import groceryRotues from "./Grocery/index";
+import { createErrorResponse } from "../services/createResponse/index";
 
 const router = express.Router();
 

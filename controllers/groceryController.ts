@@ -242,7 +242,7 @@ export const confirmPurchaseGroceryController = async (
       },
     });
     const confirmedOrders = await Promise.all(
-      pendingOrderDetails.map(async (orderdetails) => {
+      pendingOrderDetails.map(async (orderdetails: any) => {
         return await prisma.groceryListBooked.update({
           where: {
             id: orderdetails.id,
